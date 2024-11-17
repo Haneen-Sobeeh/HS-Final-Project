@@ -1,0 +1,180 @@
+
+
+
+
+header {
+   
+    color: rgb(0, 0, 0);
+    padding: 20px;
+    text-align: left;
+}
+
+h1 {
+    margin: 0;
+}
+
+
+/* Center the Cards */
+.food-card-slider {
+    padding: 20px;
+    position: relative;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center vertically */
+    flex-direction: column;
+}
+
+.slider-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+   
+    justify-content: center; /* Center horizontally */
+    gap: 10px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    padding: 20px 0;
+    width: 70%;
+}
+
+.card {
+    flex: 0 0 auto;
+    width: 300px;
+    padding: 20px;
+   margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.card h3 {
+    margin: 15px 0 10px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Improved Search Input */
+.search-input {
+    margin: 30px auto;
+    text-align: right;
+    position: relative;
+    width: 70%;
+}
+
+.search-input input {
+    width: 50%;
+    padding: 15px; /* Increased padding for a better look */
+    font-size: 1.2rem;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+    transition: all 0.3s ease;
+}
+
+.search-input input:focus {
+    border-color: #A2453D; /* Highlight color when focused */
+    box-shadow: 0 4px 12px rgba(162, 69, 61, 0.3); /* Enhanced shadow on focus */
+    outline: none;
+}
+
+/* Search button styling */
+.search-input button {
+    position: absolute;
+    right: 26%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #A2453D;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.search-input button:hover {
+    background-color: #8e3b33; /* Darker shade on hover */
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .slider-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .search-input input {
+        width: 80%; /* Adjust search input for smaller screens */
+    }
+
+    .search-input button {
+        right: 10%; /* Adjust button position */
+    }
+}
+
+.title-div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 60px;
+    width: 85%;
+    font-weight: bold;
+    margin-left: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 0px rgba(0, 0, 0, 0.1);
+}
+
+.title-div h1 {
+    margin-left: 4px;
+    font-size: 2em;
+    color: black;
+}
+
+/* Adjust the spacing between elements for a cleaner look */
+.search-container {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.pagination button {
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 50px;
+    border: 1px solid #000000;
+    background-color: white;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #8e3b33;
+    color: white;
+    border-color: #8e3b33;
+}

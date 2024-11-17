@@ -1,0 +1,183 @@
+﻿@model Orange1.Models.HomeViewModel
+
+
+@{
+	Layout = "_main";
+}
+
+<!-- /html/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+   
+    <link rel="stylesheet" href="~/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+    <!-- Navbar -->
+    <div data-include="../html/navbar.html"></div>
+
+    <!-- <div data-include="../HTML/navbar.html"></div> -->
+    <section class="home">
+        <!-- Main Content -->
+        <div class="homeImage">
+            <img src="~/images/home-page.jpg" alt="">
+            <h1>WELCOME TO HOME CHEF</h1>
+            <p>
+                where delicious meals are made easy. Find inspiration, simple recipes, and tips to turn every dish into something special."
+            </p>
+            <form asp-action="Menu" asp-controller="Product" method="post">
+                <button type="submit" class="imageButton">Order Now</button>
+            </form>
+        </div>
+    </section>
+
+    <p class="line"> Our Value</p>
+
+    <section class="image-text-section">
+        <div class="content-container">
+            <!-- Text on the left -->
+            <div class="text">
+                <h2>Eat Like a Family</h2>
+                <p>
+                    HomeChef makes dorm cooking simple with quick recipes and minimal ingredients. Perfect for students looking to enjoy tasty, homemade meals on a budget. <strong>This service is available in Irbid only.</strong>
+                </p>
+
+            </div>
+
+            <!-- Image on the right -->
+            <!-- Image on the right<div class="image">
+                 <img src="../assets/pngegg.png" alt="Sample Image">
+               </div>
+             </div>
+            -->
+            <!-- Circular Elements -->
+            <div class="circles-container">
+                <div class="circle">
+                    <div class="icon">
+                        <img src="~/images/choose.png" alt="Icon 2">
+
+                    </div>
+                    <p>You choose</p>
+                </div>
+                <div class="circle">
+                    <div class="icon">
+                        <img src="~/images/make1.png" alt="Icon 2">
+                    </div>
+                    <p>We make</p>
+                </div>
+                <div class="circle">
+                    <div class="icon">
+                        <img src="~/images/deliver.png" alt="Icon 3">
+                    </div>
+                    <p>We deliver</p>
+                </div>
+                <div class="circle">
+                    <div class="icon">
+                        <img src="~/images/food.png" alt="Icon 4">
+                    </div>
+                    <p>You eat</p>
+                </div>
+            </div>
+    </section>
+
+    <p class="line">Last Meals</p>
+  <section class="food-card-slider">
+    <button class="slider-btn left" id="slideLeft"><i class="fas fa-chevron-left"></i></button>
+
+    <div class="slider-container">
+        @if (Model.Products != null && Model.Products.Any())
+        {
+            // Render the last item as the first card
+            var lastProduct = Model.Products.Last();
+            <div class="card">
+                <div class="product-img position-relative overflow-hidden">
+                    <a asp-action="Details" asp-controller="Product" asp-route-id="@lastProduct.ProductId">
+                        <img class="img-fluid w-100" src="@lastProduct.ImagePath" >
+                          <h3 style="color:black">@lastProduct.ProductName</h3>
+                    </a>
+                        <h5>price:$@lastProduct.Price</h5>
+                </div>
+              
+            </div>
+
+            // Render the rest of the products excluding the last one
+            foreach (var item in Model.Products.Take(Model.Products.Count - 1))
+            {
+                <div class="card">
+                  
+                        <a asp-action="Details" asp-controller="Product" asp-route-id="@item.ProductId">
+                            <img class="img-fluid w-100" src="@item.ImagePath">
+                            <h3 style="color:black">@item.ProductName</h3>
+
+                            
+                        </a>
+                        <h5>Price:$@item.Price</h5>
+                    </div>
+                   
+                 
+                
+            }
+        }
+    </div>
+
+    <button class="slider-btn right" id="slideRight"><i class="fas fa-chevron-right"></i></button>
+</section>
+
+
+
+    <!-- Feedback Button -->
+    <button id="feedbackButton" class="feedback-btn">Feedback</button>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Feedback</h2>
+            <textarea id="feedbackText" placeholder="Write your feedback here..."></textarea>
+            <button id="submitFeedback" onclick="">Submit</button>
+        </div>
+    </div>
+
+    <section class="testimonials">
+        <h2 class="line">User Testimonials</h2>
+        <div id="testimonialsContainer">
+            <!-- Testimonials dynamically loaded here -->
+            @foreach (var testimonial in Model.Testimonials)
+            {
+                <div class="testimonial">
+                    <p><strong>@testimonial.CommenUser:</strong> @testimonial.CommentText</p>
+                </div>
+            }
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="~/js/home.js"></script>
+
+
+</body>
+</html>
+
+

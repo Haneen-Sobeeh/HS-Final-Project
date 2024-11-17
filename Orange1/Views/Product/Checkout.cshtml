@@ -1,0 +1,137 @@
+﻿@model Orange1.Models.OrderViewModel
+@{
+    Layout = "_main";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/orderConf.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <title>Order Confirmation</title>
+    <style>
+        .swal2-confirm {
+            background-color: #A2453D !important;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="order-confirmation-container">
+        <div class="order-summary">
+            <h2 class="line">Order Confirmation</h2>
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td><img src="@item.ImagePath" alt="@item.ProductName" style="width: 50px;"></td>
+                            <td>@item.Price</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.TotalPrice</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="total-label">Grand Total:</td>
+                        <td class="grand-total">$@Model.GrandTotal</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div id="paymentModal" class="payment-details">
+            <h2 class="line">Payment Details</h2>
+
+            <div class="payment-method">
+                <label for="paymentMethod">Select Payment Method:</label>
+                <select id="paymentMethod" name="paymentMethod" onchange="togglePaymentMethod()">
+                    <option value="creditCard">Credit Card</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="bankTransfer">Bank Transfer</option>
+                    <option value="cashOnDelivery">Cash on Delivery</option>
+                </select>
+            </div>
+
+            <div class="credit-card-details" id="creditCardDetails">
+                <h3>Credit Card Details</h3>
+                <form id="confirmOrderForm" asp-action="ConfirmOrder" asp-controller="Product" method="post">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number:</label>
+                        <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456">
+                    </div>
+                    <div class="form-group">
+                        <label for="expirationDate">Expiration Date:</label>
+                        <input type="text" id="expirationDate" name="expirationDate" placeholder="MM/YYYY">
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV:</label>
+                        <input type="password" id="cvv" name="cvv" maxlength="3">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Message for Cash on Delivery -->
+            <div id="cashOnDeliveryMessage" style="display: none;">
+                <p>When you receive the order, you will pay the amount due in cash.</p>
+            </div>
+
+            <button type="button" onclick="confirmPayment()" class="confirmOrderForm">Submit Payment</button>
+        </div>
+    </div>
+
+</body>
+
+<!-- JavaScript for SweetAlert2, Modal, Payment Method Toggle, and Form Submission -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Function to toggle the payment method form
+    function togglePaymentMethod() {
+        var paymentMethod = document.getElementById("paymentMethod").value;
+        var creditCardDetails = document.getElementById("creditCardDetails");
+        var cashOnDeliveryMessage = document.getElementById("cashOnDeliveryMessage");
+
+        if (paymentMethod === "cashOnDelivery") {
+            creditCardDetails.style.display = "none";
+            cashOnDeliveryMessage.style.display = "block";
+        } else {
+            creditCardDetails.style.display = "block";
+            cashOnDeliveryMessage.style.display = "none";
+        }
+    }
+
+    // Function to confirm payment (simulates form submission to ConfirmOrder)
+    function confirmPayment() {
+        Swal.fire({
+            title: 'Thank you for ordering!',
+            text: "The representative will contact you shortly.",
+            icon: 'success',
+            confirmButtonText: 'OK',
+            customClass: {
+                confirmButton: 'swal2-confirm' // Apply custom class
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form to ConfirmOrder action in ProductController
+                document.getElementById('confirmOrderForm').submit();
+            }
+        });
+    }
+</script>
+
+</html>

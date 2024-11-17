@@ -1,0 +1,228 @@
+﻿@model Orange1.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+    Layout = "_main";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/meal-info.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+
+<!-- Order Form Section -->
+<section class="meal-info-container">
+    <div class="image-container">
+        <img src="@Model.ImagePath" alt="Mansaf">
+    </div>
+
+    <div class="details-container">
+        <h2>@Model.ProductName</h2>
+        <p>@Model.Description</p>
+        <!-- Updated price styling -->
+        <p class="meal-price">Price: $@Model.Price</p>
+
+        <form id="addToCartForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+        <div class="input-group">
+            <div class="input-item">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" min="1" value="1">
+            </div>
+            <div class="input-item">
+                <label for="order-date">Order Date:</label>
+                    <input type="date" id="order-date" name="orderDate" required>
+            </div>
+            <div class="input-item">
+                <label for="order-time">Order Time:</label>
+                    <input type="time" id="order-time" name="orderTime" required>
+            </div>
+        </div>
+
+        <label for="comments">Comments:</label>
+        <textarea id="comments" rows="4" placeholder="Any comments or special instructions"></textarea>
+
+
+
+        <!-- Changed button to Add to Cart with icon and removed Review button -->
+            <button id="addToCartButton" class="btn">
+            <span class="cart-icon">🛒</span> Add to Cart
+        </button>
+        </form>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<div class="reviews-section">
+    <div class="details-container">
+        <h2>Customer Reviews</h2>
+        <p>Share your experience with the Meal!</p>
+
+        <!-- Review input container -->
+        <div class="input-group">
+            <textarea id="new-review" placeholder="Write your review here..." rows="3"></textarea>
+            <button onclick="addReview()">Submit</button>
+        </div>
+
+        <!-- Container for displaying previous reviews -->
+        <div id="reviews-container" class="previous-reviews">
+            <!-- Reviews will be added here dynamically -->
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Scripts -->
+<script src="~/js/meal-info.js"></script>
+
+
+<script>
+    document.getElementById("addToCartButton").addEventListener("click", function (e) {
+        e.preventDefault();
+
+        let productId = document.querySelector('input[name="ProductId"]').value;
+        let quantity = document.getElementById("quantity").value;
+        let orderDate = new Date(document.getElementById("order-date").value);
+        let orderTime = document.getElementById("order-time").value;
+        let token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        // Client-side validation
+        const now = new Date();
+        const minTime = new Date(orderDate);
+        minTime.setHours(13, 0, 0); // 1 PM
+        const maxTime = new Date(orderDate);
+        maxTime.setHours(22, 0, 0); // 10 PM
+
+        if (orderDate <= now) {
+            Swal.fire({
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                icon: 'error',
+                title: 'Invalid Date',
+                text: 'Please select a future date.'
+            });
+            return;
+        }
+
+        const [hours, minutes] = orderTime.split(":").map(Number);
+        const selectedTime = new Date(orderDate);
+        selectedTime.setHours(hours, minutes, 0);
+
+        if (selectedTime < minTime || selectedTime > maxTime) {
+            Swal.fire({
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                icon: 'error',
+                title: 'Invalid Time',
+                text: 'Order time must be between 1 PM and 10 PM.'
+            });
+            return;
+        }
+
+        // Submit the validated data
+        fetch("/Order/AddToCart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": token
+            },
+            body: JSON.stringify({
+                ProductId: productId,
+                Quantity: quantity,
+                OrderDate: orderDate.toISOString(),
+                OrderTime: orderTime
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to add to cart");
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.redirectToLogin) {
+                    window.location.href = data.loginUrl;
+                } else if (data.success) {
+                    Swal.fire({
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        icon: 'success',
+                        title: 'Added to Cart',
+                        text: 'The product was added to your cart successfully!'
+                    }).then(() => {
+                        window.location.href = "/Order/ShopCart";
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to Add',
+                        text: 'Failed to add to cart.'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add to cart.'
+                });
+            });
+    });
+
+
+
+ /*  function addReview() {
+        const reviewText = document.getElementById('new-review').value;
+        const userId = "@Model.UserId"; // Assuming `UserId` is available in your model
+
+        if (reviewText) {
+            // Prepare data to send
+            const reviewData = {
+                UserId: userId,
+                ReviewText: reviewText
+            };
+
+            fetch('/Product/AddReview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(reviewData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Create a new review element
+                        const reviewItem = document.createElement('div');
+                        reviewItem.classList.add('review-item');
+
+                        // Add the review content to the new element
+                        const reviewContent = document.createElement('p');
+                        reviewContent.textContent = reviewText;
+                        reviewItem.appendChild(reviewContent);
+
+                        // Append the review item to the reviews container
+                        document.getElementById('reviews-container').appendChild(reviewItem);
+
+                        // Clear the input field
+                        document.getElementById('new-review').value = '';
+                    } else {
+                        alert('Failed to add review.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding review:', error);
+                    alert('An error occurred while adding the review.');
+                });
+        }
+    }
+ */
+   
+</script>

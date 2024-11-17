@@ -1,0 +1,65 @@
+﻿@model Orange1.Models.HomeViewModel
+
+
+@{
+    Layout = "_main";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/menu.css">
+    <title>menu</title>
+</head>
+<body>
+ 
+
+
+    <div class="title-div">
+        <h1>Our Delicious Meals</h1>
+
+        <!-- Search Input -->
+        <div class="search-input">
+            <input type="text" id="searchByName" placeholder="Search by name...">
+        </div>
+
+
+    </div>
+
+
+    <section class="food-card-slider">
+        <div class="slider-container">
+            @foreach (var item in Model.Products)
+            {
+                <!-- Food Card 1 -->
+                <div class="card" data-id="1">
+                    <a asp-action="Details" asp-controller="Product" asp-route-id="@item.ProductId">
+                        <img class="img-fluid w-100" src="@item.ImagePath" alt="@item.ProductName">
+                    </a>
+
+                    <h3>@item.ProductName</h3>
+                    
+                    
+                </div>
+            }
+           
+
+            
+        </div>
+    </section>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination">
+        <!-- Pagination buttons will be generated here -->
+    </div>
+
+
+
+
+    <script src="~/js/menu.js"></script>
+</body>
+</html>

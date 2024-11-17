@@ -1,0 +1,206 @@
+﻿﻿@{
+	Layout = "";
+}
+@model Orange1.Models.UserViewModel
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<!-- Bootstrap CSS -->
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>User and Product Information</title>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Mo7Wz3Ov0tfT4x1vO53WKnNQpJ/5qEfgjdV1CCYoc9Ufe8EGw3KOGXK5yV0p1ndE" crossorigin="anonymous">
+
+	<!-- Font Awesome -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+	<style>
+		/* Styling for the sidebar */
+		.sidebar {
+			height: 100vh;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 200px;
+			background-color: #343a40;
+			padding-top: 20px;
+		}
+
+			.sidebar a {
+				color: white;
+				padding: 10px;
+				text-decoration: none;
+				display: block;
+			}
+
+				.sidebar a:hover {
+					background-color: #495057;
+				}
+
+		.content {
+			margin-left: 220px; /* Shift content to the right to make space for sidebar */
+		}
+	</style>
+</head>
+<body>
+<div class="sidebar bg-dark p-3">
+	<h4 class="text-white text-center mb-4">Menu</h4>
+
+	<!-- Dashboard (Category Creation) -->
+	<a asp-action="CreateCategory" asp-controller="Dashboard" class="d-flex align-items-center text-white mb-2">
+		<i class="fas fa-folder-plus mr-2"></i> Create Category
+	</a>
+
+	<!-- Product Creation -->
+	<a asp-action="Create" asp-controller="Product" class="d-flex align-items-center text-white mb-2">
+		<i class="fas fa-plus-circle mr-2"></i> Create Product
+	</a>
+
+	<!-- Order (Shopping Cart) -->
+	<a asp-action="ShopCart" asp-controller="Order" class="d-flex align-items-center text-white mb-2">
+		<i class="fas fa-shopping-cart mr-2"></i> Shopping Cart
+	</a>
+
+	<!-- Home -->
+	<a asp-action="Index" asp-controller="Home" class="d-flex align-items-center text-white mb-2">
+		<i class="fas fa-home mr-2"></i> Home
+	</a>
+
+	<!-- Shop -->
+	<a asp-action="Shop" asp-controller="Home" class="d-flex align-items-center text-white mb-2">
+		<i class="fas fa-store mr-2"></i> Shop
+	</a>
+
+	
+	<!-- Product Table -->
+	<a href="#product-table" class="d-flex align-items-center text-white mb-2">
+		<i class="fas fa-table mr-2"></i> Meal Order
+	</a>
+
+	<!-- Logout -->
+	<a asp-action="Logout" asp-controller="Account" class="d-flex align-items-center text-white mb-2">
+		<i class="fas fa-sign-out-alt mr-2"></i> Logout
+	</a>
+</div>
+
+
+	<div class="container content mt-4">
+		<!-- User Information -->
+		<div id="user-info" class="card mb-4">
+			<div class="card-header bg-primary text-white">
+				User Information
+			</div>
+			<div class="card-body">
+				<h5 class="card-title" id="userName">@Model.Name</h5>
+				<p><strong>Email:</strong> @Model.Email</p>
+			</div>
+		</div>
+
+		<!-- Product Stats Section -->
+		<div id="product-stats" class="row">
+			<!-- Number of Products Card -->
+			<div class="col-md-6 mb-4">
+				<div class="card">
+					<div class="card-header bg-info text-white">
+						Number of Products
+					</div>
+					<div class="card-body">
+						<p class="card-text"> @Model.NumberOfProducts</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Total Price Card -->
+			<div class="col-md-6 mb-4">
+				<div class="card">
+					<div class="card-header bg-warning text-white">
+						Total Price
+					</div>
+					<div class="card-body">
+						<p class="card-text"> @Model.TotalPrice</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Product Table -->
+		<div id="product-table" class="mt-4">
+			<h4>Products</h4>
+			<form asp-action="Create" asp-controller="Product" method="get">
+				<input type="submit" value="Add Product" class="btn btn-success mb-3" />
+			</form>
+			<table class="table table-striped">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">ID</th>
+						<th scope="col">Name</th>
+						
+						<th scope="col">category</th>
+						<th scope="col">Price</th>
+						<th scope="col">Description</th>
+						<th scope="col">Image</th>
+						<th scope="col">Actions</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model.products)
+					{
+							<tr>
+								<td>@item.ProductId</td>
+								<td>@item.ProductName</td>
+								<td>@item.CategoryId</td>
+								<td>@item.Price</td>
+								<td>@item.Description</td>
+								<td>
+									<img src="@item.ImagePath" alt="Product Image" style="width: 100px; height: auto;">
+								</td>
+
+
+								<td>
+									<!-- Edit Link -->
+									<a asp-action="Edit" asp-controller="Product" asp-route-id="@item.ProductId" class="btn btn-primary">
+										Edit
+									</a>
+									<!-- Delete Link with SweetAlert -->
+									<button type="button" class="btn btn-danger" onclick="confirmDelete('@item.ProductId')">
+										Delete
+									</button>
+								</td>
+
+
+							</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script>
+		function confirmDelete(productId) {
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.href = '/Product/Delete/' + productId;
+				}
+			});
+		}
+	</script>
+</body>
+
+
+</html>

@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Orange1.Models.Tastimonial>
+
+@{
+    Layout = "_main";
+}
+
+<h2>Admin Dashboard</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Comment User</th>
+            <th>Comment Text</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var testimonial in Model)
+        {
+            <tr>
+                <td>@testimonial.Id</td>
+                <td>@testimonial.CommenUser</td>
+                <td>@testimonial.CommentText</td>
+                <td>
+                    <form asp-action="RemoveTestimonial" asp-controller="Testimonial" method="post">
+                        <input type="hidden" name="id" value="@testimonial.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

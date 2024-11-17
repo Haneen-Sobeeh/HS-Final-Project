@@ -1,0 +1,118 @@
+﻿@model Orange1.Models.Categories
+
+@{
+    ViewData["Title"] = "Create Category";
+    Layout = "";
+}
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Mo7Wz3Ov0tfT4x1vO53WKnNQpJ/5qEfgjdV1CCYoc9Ufe8EGw3KOGXK5yV0p1ndE" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/style.css">
+    <style>
+        .sidebar {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 200px;
+         background-color: brown;
+        padding-top: 20px;
+        }
+
+        .sidebar a {
+        color: white;
+        padding: 10px;
+        text-decoration: none;
+        display: block;
+        }
+
+        .sidebar a:hover {
+        background-color: #495057;
+        }
+
+        .content {
+        margin-left: 220px; /* Shift content to the right to make space for sidebar */
+        }
+    </style>
+</head>
+<div class="sidebar bg-dark p-3">
+    <h4 class="text-white text-center mb-4">Menu</h4>
+
+    <!-- Dashboard (Category Creation) -->
+    <a asp-action="CreateCategory" asp-controller="Dashboard" class="d-flex align-items-center text-white mb-2">
+        <i class="fas fa-folder-plus mr-2"></i> Create Category
+    </a>
+
+    <!-- Product Creation -->
+    <a asp-action="Create" asp-controller="Product" class="d-flex align-items-center text-white mb-2">
+        <i class="fas fa-plus-circle mr-2"></i> Create Product
+    </a>
+
+    <!-- Order (Shopping Cart) -->
+    <a asp-action="ShopCart" asp-controller="Order" class="d-flex align-items-center text-white mb-2">
+        <i class="fas fa-shopping-cart mr-2"></i> Shopping Cart
+    </a>
+
+    <!-- Home -->
+    <a asp-action="Index" asp-controller="Home" class="d-flex align-items-center text-white mb-2">
+        <i class="fas fa-home mr-2"></i> Home
+    </a>
+
+    <!-- Shop -->
+    <a asp-action="Shop" asp-controller="Home" class="d-flex align-items-center text-white mb-2">
+        <i class="fas fa-store mr-2"></i> Shop
+    </a>
+
+
+    <!-- Product Table -->
+    <a href="#product-table" class="d-flex align-items-center text-white mb-2">
+        <i class="fas fa-table mr-2"></i> Meal Order
+    </a>
+
+    <!-- Logout -->
+    <a asp-action="Logout" asp-controller="Account" class="d-flex align-items-center text-white mb-2">
+        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+    </a>
+</div>
+
+
+<div class="container mt-5">
+    <h2 class="text-center">@ViewData["Title"]</h2>
+    <p class="text-muted text-center">Add a new category with a name and an optional image.</p>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="CreateCategory" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <!-- Category Name Input -->
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label">Category Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter category name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Image Upload Input -->
+                <div class="form-group">
+                    <label for="ImageFile" class="form-label">Category Image</label>
+                    <input type="file" name="ImageFile" class="form-control-file" accept=".jpg, .jpeg, .png, .gif" />
+                    <small class="form-text text-muted">Accepted formats: JPG, JPEG, PNG, GIF</small>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group text-center mt-4">
+                    <input type="submit" value="Create Category" style="font-size:20px;height: 60px; width: px; background-color: #A2453D; color: #FFFFFF;" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
